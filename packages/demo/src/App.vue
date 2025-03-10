@@ -13,7 +13,7 @@
       />
     </div>
     <div class="footer" :class="{ light: isLight }">
-      © SamaTech 2024. All rights reserved. Hosted on
+      © SamaTech 2024. Hosted on
       <a target="_blank" href="https://pubstud.io">PubStudio</a>
     </div>
   </div>
@@ -28,7 +28,7 @@ import {
   IRgba,
 } from '@samatech/vue-color-picker'
 import '@samatech/vue-color-picker/dist/style.css'
-import { computed, ref } from 'vue'
+import { computed, ref, watch } from 'vue'
 
 const selectedColor = ref<string | undefined>()
 const selectedGradient = ref()
@@ -37,6 +37,10 @@ const isLight = ref(true)
 
 const background = computed(() => {
   return selectedColor.value ?? selectedGradient.value ?? '#f8f5f0'
+})
+
+watch(background, (color) => {
+  document.body.style.background = color
 })
 
 const getRgba = (color: IPickerColor | undefined) => {
@@ -92,7 +96,6 @@ body {
   margin: 0;
   width: 100%;
   height: 100%;
-  background-color: #f8f5f0;
 }
 html *,
 body * {
