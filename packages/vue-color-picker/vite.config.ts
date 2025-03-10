@@ -17,12 +17,11 @@ export default defineConfig({
     outDir: './dist',
     emptyOutDir: true,
     sourcemap: true,
-    minify: true,
+    minify: 'terser',
     lib: {
       formats: ['es'],
       entry: [resolve('./src/index.ts')],
       name: '@samatech/vue-color-picker',
-      fileName: () => outputName,
     },
     rollupOptions: {
       // externalize deps that shouldn't be bundled
@@ -30,6 +29,12 @@ export default defineConfig({
       output: {
         format: 'es',
         dir: 'dist',
+        entryFileNames: (_entry) => {
+          return outputName
+        },
+        assetFileNames: (_entry) => {
+          return 'style.css'
+        },
       },
     },
   },
