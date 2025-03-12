@@ -11,8 +11,8 @@ jobs:
         with:
           fetch-depth: 0
       - uses: ./.github/actions/env-setup
-      - run: npm run build
-      - run: cd packages/vue-color-picker && npm publish --access public
+      - run: pnpm run build
+      - run: pnpm publish --access public --filter '@samatech/vue-color-picker' --dry-run
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
       - run: npx conventional-github-releaser -p angular
