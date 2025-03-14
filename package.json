@@ -1,9 +1,10 @@
 {
   "name": "vue-color-picker",
   "version": "1.0.0",
-  "description": "",
+  "description": "Vue color picker component",
   "scripts": {
     "build": "npm run build:lib",
+    "build-publish": "pnpm --filter '@samatech/vue-color-picker' run build-publish",
     "demo": "pnpm --filter '*demo' run dev",
     "format": "prettier -w \"{**/*,*}.{ts,js,json}\"",
     "format:check": "prettier --check \"{**/*,*}.{ts,js,json}\"",
