@@ -1,6 +1,6 @@
 {
   "name": "@samatech/vue-color-picker",
-  "version": "1.0.5",
+  "version": "1.0.6",
   "description": "Vue color picker component",
   "type": "module",
   "main": "dist/vue-color-picker.es.js",
