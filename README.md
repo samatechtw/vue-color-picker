@@ -87,60 +87,23 @@ const applyGradient = (gradient: IThemedGradient | undefined) => {
 </script>
 ```
 
-#### Undefined handling
-
-If a state field is set to `undefined`, it will not appear in the flattened module, or be saved with the LocalStoragePlugin. It is recommended to use `null` instead, and make use of strict type checking to avoid accidentally setting fields to `undefined`. It is possible to add `undefined` support to the LocalStoragePlugin, please file a feature request or submit a PR if you need this functionality.
-
-### Plugins
-
-Plugins can help initialize state, and operate on state when it changes. A basic [LocalStoragePlugin](./lib/plugins.ts) is provided for persisting a module's state to browser storage.
-
-Writing plugins is straightforward, just provide an object conforming to IPlugin, or a function that accepts a module parameter and returns IPlugin.
-
-```ts
-interface IPlugin<S extends IState> {
-  // Called when the module is initialized
-  onStateInit?: (state: S) => S
-  // Called any time the module's state changes
-  onDataChange?: WatchCallback<UnwrapNestedRefs<S>, UnwrapNestedRefs<S> | undefined>
-}
-
-interface MyState {
-  dots: string
-}
-
-const dummyPlugin: IPlugin<MyState> = {
-  onDataChange: (value) => {
-    value.dots += '.'
-  },
-}
-```
-
-## Environment
-
-TODO -- details about using alongside other versions of @vue/reactivity
-
-## Example
-
-See the [`example`](./example) folder.
-
 ## Development
 
 We use [PNPM](https://pnpm.io/) workspaces for development
 
 ```bash
 # Clone
-git clone git@github.com:samatechtw/vue-store
-cd vue-store
+git clone git@github.com:samatechtw/vue-color-picker
+cd vue-color-picker
 
 # Install dependencies
 pnpm install
 
-# Run example
-pnpm run all:dev
-
-# Build
+# Build library
 pnpm run build
+
+# Run example site
+pnpm run demo
 ```
 
 ## License
