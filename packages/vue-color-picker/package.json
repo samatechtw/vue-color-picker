@@ -23,8 +23,7 @@
     "url": "git+https://github.com/samatechtw/vue-color-picker.git"
   },
   "scripts": {
-    "build": "vite build",
-    "build-publish": "./build-publish.sh"
+    "build": "vite build"
   },
   "keywords": [],
   "author": "",
