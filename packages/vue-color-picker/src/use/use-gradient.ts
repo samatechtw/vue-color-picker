@@ -10,7 +10,7 @@ import {
 
 export interface IGradientOptions {
   gradient: string | undefined
-  resolveThemeVar: ResolveThemeVarFn
+  resolveThemeVar?: ResolveThemeVarFn
 }
 
 export interface IUpdateGradientStopParams {
