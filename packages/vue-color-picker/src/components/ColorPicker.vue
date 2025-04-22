@@ -56,8 +56,8 @@
           {{ copy?.gradient ?? 'Gradient' }}
         </ColorPickerButton>
       </div>
-      <Box name="HEX" :color="modelHex" @inputColor="inputHex" />
-      <Box name="RGBA" :color="modelRgba" @inputColor="inputRgba" />
+      <Box name="HEX" :color="hexString" @inputColor="inputHex" />
+      <Box name="RGBA" :color="rgbaStringShort" @inputColor="inputRgba" />
       <div class="select-wrap">
         <ColorPickerButton class="color-select" @click="emitResult">
           {{ copy?.select ?? 'Select' }}
@@ -193,8 +193,6 @@ interface IColor {
   themeVar: string | undefined
 }
 
-const modelRgba = ref('')
-const modelHex = ref('')
 const c = reactive<IColor>({
   r: 0,
   g: 0,
@@ -258,7 +256,7 @@ const hexString = computed(() => {
 const colorEmit = () => ({
   rgba: rgba.value,
   hsv: hsv.value,
-  hex: modelHex.value,
+  hex: hexString.value,
   themeVar: c.themeVar,
 })
 
@@ -306,7 +304,6 @@ const deleteColor = (index: number) => {
 const selectSaturation = (color: IRgba) => {
   const { r, g, b, h, s, v } = setColorValue(color)
   Object.assign(c, { r, g, b, h, s, v, themeVar: undefined })
-  setText()
   updateSelectedGradientColor(rgbaString.value)
   emitUpdate()
 }
@@ -315,7 +312,6 @@ const selectHue = async (color: any) => {
   const { r, g, b, h } = setColorValue(color)
   // Retain previous saturation
   Object.assign(c, { r, g, b, h, themeVar: undefined })
-  setText()
   updateSelectedGradientColor(rgbaString.value)
   await rerender()
   saturation.value.recalculateSaturation()
@@ -325,7 +321,6 @@ const selectHue = async (color: any) => {
 const selectAlpha = (a: any) => {
   c.a = a
   c.themeVar = undefined
-  setText()
   updateSelectedGradientColor(rgbaString.value)
   emitUpdate()
 }
@@ -334,8 +329,6 @@ const inputHex = async (color: string) => {
   const normalized = normalizeHex(color)
   const { r, g, b, a, h, s, v } = setColorValue(normalized ?? color)
   Object.assign(c, { r, g, b, a, h, s, v, themeVar: undefined })
-  modelHex.value = color
-  modelRgba.value = rgbaStringShort.value
   updateSelectedGradientColor(rgbaString.value)
   await rerender()
   emitUpdate()
@@ -352,21 +345,14 @@ const rerender = async () => {
 const inputRgba = async (color: string) => {
   const { r, g, b, a, h, s, v } = setColorValue(color)
   Object.assign(c, { r, g, b, a, h, s, v, themeVar: undefined })
-  modelHex.value = hexString.value
-  modelRgba.value = color
   updateSelectedGradientColor(rgbaString.value)
   await rerender()
   emitUpdate()
 }
 
-const setText = () => {
-  modelHex.value = hexString.value
-  modelRgba.value = rgbaStringShort.value
-}
 const selectColor = async (color: string, themeVar?: string) => {
   const { r, g, b, a, h, s, v } = setColorValue(color)
   Object.assign(c, { r, g, b, a, h, s, v, themeVar })
-  setText()
   await rerender()
   emitUpdate()
 }
@@ -400,12 +386,11 @@ onMounted(async () => {
   if (forceNonGradient.value) {
     initialColor = color.value
   }
-  const resolved = resolveThemeVar.value(initialColor) ?? ''
+  const resolved = resolveThemeVar.value(initialColor) ?? initialColor
   Object.assign(c, setColorValue(resolved))
   if (initialColor !== resolved) {
     c.themeVar = initialColor.match(/\$\{(.*?)\}/)?.[1] || undefined
   }
-  setText()
   await rerender()
   emitUpdate()
 })

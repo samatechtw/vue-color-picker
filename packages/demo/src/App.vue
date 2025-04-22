@@ -13,6 +13,7 @@
       />
     </div>
     <div class="footer" :class="{ light: isLight }">
+      {{ selectedColor }}
       © SamaTech 2024. Hosted on
       <a target="_blank" href="https://pubstud.io">PubStudio</a>
     </div>
@@ -30,7 +31,7 @@ import {
 import '@samatech/vue-color-picker/dist/style.css'
 import { computed, ref, watch } from 'vue'
 
-const selectedColor = ref<string | undefined>()
+const selectedColor = ref<string | undefined>('#f8f5f0')
 const selectedGradient = ref()
 const themeColors = ref<IThemeColor[]>([])
 const isLight = ref(true)
