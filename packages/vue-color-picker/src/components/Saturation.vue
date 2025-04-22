@@ -6,7 +6,7 @@
 </template>
 
 <script lang="ts" setup>
-import { onMounted, ref, toRefs } from 'vue'
+import { ref, toRefs } from 'vue'
 import { IHsv, IRgba } from '../types'
 import { createLinearGradient } from '../util'
 
@@ -127,11 +127,6 @@ const selectSaturation = (e: MouseEvent) => {
 }
 
 defineExpose({ renderColor, renderSlide, recalculateSaturation })
-
-onMounted(() => {
-  renderColor()
-  renderSlide()
-})
 
 // Can’t monitor, otherwise the color will change when you change yourself
 // watch(color, renderColor())

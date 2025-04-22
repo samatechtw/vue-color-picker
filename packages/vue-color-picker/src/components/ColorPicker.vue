@@ -75,7 +75,7 @@
             @click="selectThemeColor(variable)"
           />
         </div>
-        <div v-else class="theme-color-empty">
+        <div v-else-if="showEmptyTheme" class="theme-color-empty">
           {{ copy?.noThemeColors ?? 'No theme colors' }}
         </div>
       </div>
@@ -146,13 +146,14 @@ const props = withDefaults(
     colorsDefault?: string[]
     resolveThemeVar?: ResolveThemeVarFn
     selectedThemeColors: IThemeColor[]
+    showEmptyTheme?: boolean
     copy?: IPickerText
   }>(),
   {
     color: '#000000',
     gradient: undefined,
     theme: 'dark',
-    resolveThemeVar: () => undefined,
+    resolveThemeVar: undefined,
     colorsDefault: () => [
       /*
       '#000000',
@@ -386,7 +387,7 @@ onMounted(async () => {
   if (forceNonGradient.value) {
     initialColor = color.value
   }
-  const resolved = resolveThemeVar.value(initialColor) ?? initialColor
+  const resolved = resolveThemeVar.value?.(initialColor) ?? initialColor
   Object.assign(c, setColorValue(resolved))
   if (initialColor !== resolved) {
     c.themeVar = initialColor.match(/\$\{(.*?)\}/)?.[1] || undefined
@@ -482,14 +483,11 @@ canvas {
   margin-left: 0;
 }
 
-.theme-colors {
-  margin-top: 12px;
-}
 .theme-color-grid {
   display: flex;
   flex-direction: row;
   flex-wrap: wrap;
-  margin: -8px 0 0 -8px;
+  margin: 4px 0 0 -8px;
 }
 .theme-color-cell {
   width: 17px;
@@ -507,5 +505,6 @@ canvas {
   font-family: var(--color-picker-font-text);
   color: var(--color-picker-color-light3, #a1a1aa);
   font-size: 13px;
+  margin-top: 12px;
 }
 </style>
