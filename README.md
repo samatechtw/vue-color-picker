@@ -39,6 +39,7 @@ Displays the picker and updates refs on color/gradient selection. See `packages/
 import { ref } from 'vue'
 import {
   ColorPicker,
+  getRgbaCss,
   IPickerColor,
   IThemedGradient,
   IThemeColor,
@@ -50,20 +51,12 @@ const selectedColor = ref<string | undefined>()
 const selectedGradient = ref()
 const themeColors = ref<IThemeColor[]>([])
 
-const getRgba = (color: IPickerColor | undefined) => {
-  if (color) {
-    const { r, g, b, a } = color.rgba
-    return `rgba(${r}, ${g}, ${b}, ${a})`
-  }
-  return undefined
-}
-
 const update = (color: IPickerColor | IThemedGradient | undefined) => {
   if (color && 'raw' in color) {
     selectedGradient.value = color.raw
     selectedColor.value = undefined
   } else {
-    selectedColor.value = getRgba(color)
+    selectedColor.value = getRgbaCss(color?.rgba)
     selectedGradient.value = undefined
   }
 }
@@ -75,7 +68,7 @@ const addThemeColor = (color: string | undefined) => {
 }
 
 const selectColor = (color: IPickerColor | undefined) => {
-  selectedColor.value = getRgba(color)
+  selectedColor.value = getRgbaCss(color?.rgba)
   selectedGradient.value = undefined
   addThemeColor(selectedColor.value)
 }

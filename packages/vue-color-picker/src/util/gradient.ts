@@ -1,4 +1,5 @@
 import { GradientType, GradientTypeValues, IGradientColor } from '../types'
+import { getRgbaCss } from './get-rgba-css'
 import { hexToRgba } from './hex'
 
 type IDirection = 'l' | 'r' | 'p'
@@ -71,7 +72,7 @@ export const parseGradientColors = (
         const stop = stopMatch[0]
         const c = hexToRgba(hex)
         if (CSS.supports('color', hex) && c) {
-          const rgba = `rgba(${c.r},${c.g},${c.b})`
+          const rgba = getRgbaCss(c)
           gradientColors.push({
             rgba,
             stop: parseInt(stop || '0'),
@@ -92,7 +93,7 @@ export const parseGradientColors = (
         if (colorStr?.startsWith('#')) {
           const c = hexToRgba(colorStr)
           if (c) {
-            colorStr = `rgba(${c.r},${c.g},${c.b})`
+            colorStr = getRgbaCss(c)
           }
         }
         if (CSS.supports('color', colorStr)) {

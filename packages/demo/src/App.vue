@@ -27,6 +27,7 @@ import {
   IThemedGradient,
   IThemeColor,
   IRgba,
+  getRgbaCss,
 } from '@samatech/vue-color-picker'
 import '@samatech/vue-color-picker/dist/style.css'
 import { computed, ref, watch } from 'vue'
@@ -44,14 +45,6 @@ watch(background, (color) => {
   document.body.style.background = color
 })
 
-const getRgba = (color: IPickerColor | undefined) => {
-  if (color) {
-    const { r, g, b, a } = color.rgba
-    return `rgba(${r}, ${g}, ${b}, ${a})`
-  }
-  return undefined
-}
-
 const checkLight = (rgba: IRgba) => {
   const { r, g, b } = rgba
   const a = 765 - (rgba.a ?? 1) * 765
@@ -63,7 +56,7 @@ const update = (color: IPickerColor | IThemedGradient | undefined) => {
     selectedGradient.value = color.raw
     selectedColor.value = undefined
   } else {
-    selectedColor.value = getRgba(color)
+    selectedColor.value = getRgbaCss(color?.rgba)
     selectedGradient.value = undefined
     if (color) {
       checkLight(color.rgba)
@@ -78,7 +71,7 @@ const addThemeColor = (color: string | undefined) => {
 }
 
 const selectColor = (color: IPickerColor | undefined) => {
-  selectedColor.value = getRgba(color)
+  selectedColor.value = getRgbaCss(color?.rgba)
   selectedGradient.value = undefined
   addThemeColor(selectedColor.value)
 }

@@ -1,4 +1,5 @@
 import { IPickerColor, IRgba } from '../types'
+import { getRgbaCss } from './get-rgba-css'
 
 export function rgb2rgba(rgba: string): IRgba {
   const rgbaArr = (/rgba?\((.*?)\)/.exec(rgba) || ['', '0,0,0,1'])[1].split(',')
@@ -64,7 +65,6 @@ export const colorToCssValue = (
       return `$\{${pickerColor.themeVar}}`
     }
   } else {
-    const c = pickerColor.rgba
-    return c ? `rgba(${c.r},${c.g},${c.b},${c.a})` : undefined
+    return getRgbaCss(pickerColor.rgba)
   }
 }
