@@ -5,5 +5,6 @@ export interface IPickerColor {
   rgba: IRgba
   hsv: IHsv
   hex: string
+  strVal: string
   themeVar?: string
 }

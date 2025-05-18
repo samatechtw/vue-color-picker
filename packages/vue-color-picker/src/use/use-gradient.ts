@@ -28,6 +28,7 @@ export interface IGradientFeature {
   computedGradient: ComputedRef<IThemedGradient>
   // Computed linear-gradient CSS value for gradient bar
   computedGradientForBar: ComputedRef<string>
+  reinitGradient: (gradient: string) => void
   addGradientColor: (rgba: string, themeVar?: string) => void
   updateGradientDegree: (degree: number) => void
   updateSelectedGradientColor: (rgba: string, themeVar?: string) => void
@@ -44,6 +45,13 @@ export const useGradient = (options: IGradientOptions): IGradientFeature => {
   const gradientType = ref(parseGradientType(gradient))
   const gradientDegree = ref(parseGradientDegree(gradient))
   const gradientColors = ref(parseGradientColors(gradient, resolveThemeVar))
+
+  const reinitGradient = (newGradient: string) => {
+    selectedIndex.value = 0
+    gradientType.value = parseGradientType(newGradient)
+    gradientDegree.value = parseGradientDegree(newGradient)
+    gradientColors.value = parseGradientColors(newGradient, resolveThemeVar)
+  }
 
   const computedGradient = computed(() => {
     return computeGradient(gradientType.value, gradientDegree.value, gradientColors.value)
@@ -116,6 +124,7 @@ export const useGradient = (options: IGradientOptions): IGradientFeature => {
     gradientColors,
     computedGradient,
     computedGradientForBar,
+    reinitGradient,
     addGradientColor,
     updateGradientDegree,
     updateSelectedGradientColor,
