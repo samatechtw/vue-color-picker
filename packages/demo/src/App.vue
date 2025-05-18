@@ -30,7 +30,7 @@ import {
   getRgbaCss,
 } from '@samatech/vue-color-picker'
 import '@samatech/vue-color-picker/dist/style.css'
-import { computed, ref, watch } from 'vue'
+import { computed, onMounted, ref, watch } from 'vue'
 
 const selectedColor = ref<string | undefined>('#f8f5f0')
 const selectedGradient = ref()
@@ -71,15 +71,31 @@ const addThemeColor = (color: string | undefined) => {
 }
 
 const selectColor = (color: IPickerColor | undefined) => {
-  selectedColor.value = getRgbaCss(color?.rgba)
+  selectedColor.value = color?.strVal
   selectedGradient.value = undefined
   addThemeColor(selectedColor.value)
+  localStorage.setItem('__colorPickerColor', color?.strVal ?? '')
+  localStorage.removeItem('__colorPickerIsGradient')
 }
 
 const applyGradient = (gradient: IThemedGradient | undefined) => {
   selectedGradient.value = gradient?.raw
   selectedColor.value = undefined
+  localStorage.setItem('__colorPickerColor', gradient?.raw ?? '')
+  localStorage.setItem('__colorPickerIsGradient', '1')
 }
+
+onMounted(() => {
+  const color = localStorage.getItem('__colorPickerColor') || '#f8f5f0'
+  const isGradient = localStorage.getItem('__colorPickerIsGradient') || false
+  if (isGradient) {
+    selectedGradient.value = color
+    selectedColor.value = undefined
+  } else {
+    selectedGradient.value = undefined
+    selectedColor.value = color
+  }
+})
 </script>
 
 <style lang="postcss">

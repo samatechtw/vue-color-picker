@@ -51,7 +51,7 @@ const zIndex = computed(() => (selected.value ? 1 : 0))
   position: absolute;
   width: 14px;
   top: -10px;
-  left: v-bind(left - 4 + 'px');
+  left: v-bind(left - 8 + 'px');
   align-items: center;
   opacity: 0.45;
   z-index: v-bind(zIndex);

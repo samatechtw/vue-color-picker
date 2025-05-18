@@ -1,6 +1,6 @@
 <template>
   <div class="color-picker" :class="{ light: isLightTheme, gradient: isGradient }">
-    <div class="picker-col" :style="{ width: totalWidth + 'px' }">
+    <div class="picker-col" :style="{ width: `${totalWidth}px` }">
       <div class="color-set">
         <Saturation
           ref="saturation"
@@ -80,7 +80,7 @@
         </div>
       </div>
     </div>
-    <div v-if="isGradient" class="picker-col" :style="{ width: totalWidth + 'px' }">
+    <div v-if="isGradient" class="picker-col" :style="{ width: '154px' }">
       <Gradient
         :selectedIndex="selectedIndex"
         :gradientType="gradientType"
@@ -102,7 +102,7 @@
 </template>
 
 <script lang="ts" setup>
-import { computed, nextTick, onMounted, reactive, ref, toRefs } from 'vue'
+import { computed, nextTick, onMounted, reactive, ref, toRefs, watch } from 'vue'
 import Trash from './Trash.vue'
 import Saturation from './Saturation.vue'
 import Hue from './Hue.vue'
@@ -113,6 +113,7 @@ import Box from './Box.vue'
 import ColorPickerButton from './ColorPickerButton.vue'
 import {
   colorCodeToRgbaString,
+  getRgbaCss,
   normalizeHex,
   ResolveThemeVarFn,
   rgb2hex,
@@ -208,6 +209,10 @@ const saturation = ref()
 const hue = ref()
 const alpha = ref()
 
+// Used to detect forced color update from parent component
+const lastSelectStr = ref()
+const lastUpdateStr = ref()
+
 const {
   selectedIndex,
   gradientType,
@@ -215,6 +220,7 @@ const {
   gradientColors,
   computedGradient,
   computedGradientForBar,
+  reinitGradient,
   addGradientColor,
   updateGradientDegree,
   updateSelectedGradientColor,
@@ -254,14 +260,17 @@ const hexString = computed(() => {
   return rgb2hex(rgba.value, true)
 })
 
-const colorEmit = () => ({
+const colorEmit = (): IPickerColor => ({
   rgba: rgba.value,
   hsv: hsv.value,
   hex: hexString.value,
+  strVal: getRgbaCss(rgba.value),
   themeVar: c.themeVar,
 })
 
 const clearColor = () => {
+  lastSelectStr.value = undefined
+  lastUpdateStr.value = undefined
   if (isGradient.value) {
     emit('applyGradient', undefined)
   } else {
@@ -271,9 +280,12 @@ const clearColor = () => {
 
 const emitUpdate = () => {
   if (isGradient.value) {
+    lastUpdateStr.value = computedGradient.value.raw
     emit('update', computedGradient.value)
   } else {
-    emit('update', colorEmit())
+    const color = colorEmit()
+    lastUpdateStr.value = color.strVal
+    emit('update', color)
   }
 }
 
@@ -370,20 +382,25 @@ const selectThemeColor = async (themeVar: IThemeColor) => {
   if (isGradient.value) {
     updateSelectedGradientColor(rgba, themeVar.key)
   } else {
-    emit('selectColor', colorEmit())
+    const color = colorEmit()
+    lastSelectStr.value = color.strVal
+    emit('selectColor', color)
   }
 }
 
 const emitResult = () => {
   if (isGradient.value) {
+    lastSelectStr.value = computedGradient.value.raw
     emit('applyGradient', computedGradient.value)
   } else {
-    emit('selectColor', colorEmit())
+    const color = colorEmit()
+    lastSelectStr.value = color.strVal
+    emit('selectColor', color)
   }
 }
 
-onMounted(async () => {
-  let initialColor = gradientColors.value[0]?.rgba || color.value
+const initColor = async (newColor: string) => {
+  let initialColor = newColor
   if (forceNonGradient.value) {
     initialColor = color.value
   }
@@ -394,6 +411,28 @@ onMounted(async () => {
   }
   await rerender()
   emitUpdate()
+}
+
+watch(color, (newColor) => {
+  if (newColor && newColor !== lastSelectStr.value && newColor !== lastUpdateStr.value) {
+    initColor(newColor)
+  }
+})
+
+watch(gradient, (newGradient) => {
+  if (
+    newGradient &&
+    newGradient !== lastSelectStr.value &&
+    newGradient !== lastUpdateStr.value
+  ) {
+    reinitGradient(newGradient)
+    initColor(newGradient)
+  }
+})
+
+onMounted(async () => {
+  let initialColor = gradientColors.value[0]?.rgba || color.value
+  await initColor(initialColor)
 })
 </script>
 
@@ -429,7 +468,7 @@ onMounted(async () => {
   border-color: #313233;
 }
 .picker-col {
-  padding: 10px;
+  padding: 8px;
   box-sizing: initial;
 }
 canvas {

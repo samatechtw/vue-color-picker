@@ -113,7 +113,7 @@ const updateStop = (index: number, stop: number) => {
 .g-label {
   font-family: var(--color-picker-font-text);
   font-weight: 500;
-  font-size: 14px;
+  font-size: 13px;
 }
 .color-label {
   display: flex;
@@ -137,9 +137,9 @@ const updateStop = (index: number, stop: number) => {
 }
 .gradient-type {
   font-family: var(--color-picker-font-text);
-  font-size: 14px;
-  padding: 4px 8px;
-  margin-top: 8px;
+  font-size: 13px;
+  padding: 4px 6px;
+  margin-top: 6px;
   color: var(--color-picker-color-light2, #dddfe2);
   border: 1px solid var(--color-picker-color-border, #606470);
   cursor: pointer;
